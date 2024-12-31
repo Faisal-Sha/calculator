@@ -38,3 +38,19 @@ def test_parentheses_only():
 
 def test_operator_precedence():
     assert calc('3 + 5 * 2') == 13  # 3 + (5 * 2)
+
+# Step 3 Tests - Trigonometric Functions
+def test_sin_function():
+    assert abs(calc('sin(90)') - 1) < 1e-6  # sin(90 degrees) = 1
+
+def test_cos_function():
+    assert abs(calc('cos(0)') - 1) < 1e-6  # cos(0 degrees) = 1
+
+def test_tan_function():
+    assert abs(calc('tan(45)') - 1) < 1e-6  # tan(45 degrees) = 1
+
+def test_complex_expression_with_functions():
+    assert abs(calc('sin(90) + cos(0) * tan(45)') - 2) < 1e-6
+
+def test_function_with_parentheses():
+    assert abs(calc('sin(30) * (cos(60) + tan(45))') - 0.75) < 1e-6
