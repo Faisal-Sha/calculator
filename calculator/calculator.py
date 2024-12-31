@@ -1,4 +1,9 @@
-# Step 1: Basic Arithmetic Operations (will be integrated with Step 2)
+import re
+
+def tokenize_expression(expression: str):
+    return re.findall(r'\d+\.?\d*|[+\-*/^()]', expression)
+
+
 def precedence(op: str) -> int:
     """Returns the precedence of the operators."""
     if op in ('+', '-'):
@@ -7,38 +12,38 @@ def precedence(op: str) -> int:
         return 2
     return 0
 
-def infix_to_postfix(expression: str) -> list:
-    """Converts an infix expression to postfix using the shunting yard algorithm."""
+def infix_to_postfix(tokens):
+    precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3}
     output = []
     operators = []
-    tokens = expression.split()
-
+    
     for token in tokens:
-        if token.isdigit() or '.' in token:  # Operand (number)
+        if token.isdigit():  # Operand
             output.append(token)
         elif token == '(':  # Left parenthesis
             operators.append(token)
         elif token == ')':  # Right parenthesis
             while operators and operators[-1] != '(':
                 output.append(operators.pop())
-            operators.pop()  # Pop the '('
-        else:  # Operator (+, -, *, /)
-            while (operators and precedence(operators[-1]) >= precedence(token)):
+            operators.pop()  # Remove '('
+        else:  # Operator
+            while (operators and operators[-1] != '(' and
+                   precedence[operators[-1]] >= precedence[token]):
                 output.append(operators.pop())
             operators.append(token)
     
-    while operators:  # Pop remaining operators
+    while operators:
         output.append(operators.pop())
-
+    
     return output
 
-def evaluate_postfix(postfix: list) -> float:
-    """Evaluates a postfix expression."""
+
+def evaluate_postfix(postfix):
     stack = []
     for token in postfix:
-        if token.isdigit() or '.' in token:  # Operand (number)
+        if token.isdigit():
             stack.append(float(token))
-        else:  # Operator (+, -, *, /)
+        else:
             operand2 = stack.pop()
             operand1 = stack.pop()
             if token == '+':
@@ -48,35 +53,20 @@ def evaluate_postfix(postfix: list) -> float:
             elif token == '*':
                 stack.append(operand1 * operand2)
             elif token == '/':
-                # Handle division by zero
                 if operand2 == 0:
-                    raise ValueError("Cannot divide by zero")
+                    raise ValueError("Division by zero")
                 stack.append(operand1 / operand2)
-    
-    return stack[0]  # Final result (single value left in stack)
+    return stack[0]
 
-def calc(expression: str) -> float:
+
+def calc(expression: str):
+
     """Calculates the result of a mathematical expression with operator precedence."""
-    # Step 1: Handle basic arithmetic operations first
-    expression = expression.replace(' ', '')  # Remove spaces for easier processing
+    # expression = expression.replace(' ', '')  # Remove spaces for easier processing
+    tokens = tokenize_expression(expression)
 
-    # Check for basic operations first and perform directly
-    if '+' in expression:
-        operands = expression.split('+')
-        return float(operands[0]) + float(operands[1])
-    elif '-' in expression:
-        operands = expression.split('-')
-        return float(operands[0]) - float(operands[1])
-    elif '*' in expression:
-        operands = expression.split('*')
-        return float(operands[0]) * float(operands[1])
-    elif '/' in expression:
-        operands = expression.split('/')
-        # Handle division by zero
-        if float(operands[1]) == 0:
-            raise ValueError("Cannot divide by zero")
-        return float(operands[0]) / float(operands[1])
+    # Handle complex expressions with precedence and parentheses using postfix notation
+    postfix = infix_to_postfix(tokens)  # Convert infix expression to postfix
+    return evaluate_postfix(postfix)  # Evaluate the postfix expression and return the result
 
-    # Step 2: Handle more complex expressions with precedence and parentheses
-    postfix = infix_to_postfix(expression)
-    return evaluate_postfix(postfix)
+

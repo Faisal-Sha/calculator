@@ -24,17 +24,17 @@ def test_division_by_zero():
         calc('1 / 0')
 
 # Step 2 Tests
-# def test_complex_expression_1():
-#     assert calc('1 + 1 * 5') == 6
+def test_complex_expression_1():
+    assert calc('1 + 1 * 5') == 6
 
-# def test_complex_expression_2():
-#     assert calc('(1 + 1) * 5') == 10
+def test_complex_expression_2():
+    assert calc('(1 + 1) * 5') == 10
 
-# def test_complex_expression_3():
-#     assert calc('(2 + 3) * (4 - 1)') == 15
+def test_complex_expression_3():
+    assert calc('(2 + 3) * (4 - 1)') == 15
 
-# def test_parentheses_only():
-#     assert calc('(2 + 3)') == 5
+def test_parentheses_only():
+    assert calc('(2 + 3)') == 5
 
-# def test_operator_precedence():
-#     assert calc('3 + 5 * 2') == 13  # 3 + (5 * 2)
+def test_operator_precedence():
+    assert calc('3 + 5 * 2') == 13  # 3 + (5 * 2)
